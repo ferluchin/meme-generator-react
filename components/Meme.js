@@ -8,25 +8,15 @@ export default function Meme() {
     })
     const [allMemes, setAllMemes] = React.useState([])
     
-/**
-useEffect takes a function as its parameter. If that function
-returns something, it needs to be a cleanup function. Otherwise,
-it should return nothing. If we make it an async function, it
-automatically retuns a promise instead of a function or nothing.
-Therefore, if you want to use async operations inside of useEffect,
-you need to define the function separately inside of the callback
-function, as seen below:
-*/
     React.useEffect(() => {
-        async function getMemes() {
-            const res = await fetch("https://api.imgflip.com/get_memes")
-            const data = await res.json()
-            setAllMemes(data.data.memes)
-        }
-        getMeme()
+        fetch("https://api.imgflip.com/get_memes")
+            .then(res => res.json())
+            .then(data => setAllMemes(data.data.memes))
+            .catch(err => console.error("Error fetching memes:", err)); // Manejo de errores
     }, [])
     
     function getMemeImage() {
+        if (allMemes.length === 0) return; // Evitar error si allMemes está vacío
         const randomNumber = Math.floor(Math.random() * allMemes.length)
         const url = allMemes[randomNumber].url
         setMeme(prevMeme => ({
@@ -71,7 +61,7 @@ function, as seen below:
                 </button>
             </div>
             <div className="meme">
-                <img src={meme.randomImage} className="meme--image" />
+                <img src={meme.randomImage} className="meme--image" alt="Meme" />
                 <h2 className="meme--text top">{meme.topText}</h2>
                 <h2 className="meme--text bottom">{meme.bottomText}</h2>
             </div>

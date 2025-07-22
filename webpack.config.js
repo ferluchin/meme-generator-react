@@ -1,25 +1,32 @@
+const path = require('path');
+
 module.exports = {
-  "output": {
-    "filename": "[name].pack.js"
+  mode: 'development',
+  entry: {
+    index: './index.js'
   },
-  "module": {
-    "rules": [
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'index.pack.js'
+  },
+  module: {
+    rules: [
       {
-        "use": {
-          "loader": "babel-loader",
-          "options": {
-            "presets": [
-              "babel-preset-env",
-              "babel-preset-react"
-            ]
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react']
           }
-        },
-        "exclude": /node_modules/,
-        "test": /\.js$/
+        }
       }
     ]
   },
-  "entry": {
-    "index": "./index"
+  devServer: {
+    static: {
+      directory: path.join(__dirname, '/'),
+    },
+    port: 8080
   }
 };
